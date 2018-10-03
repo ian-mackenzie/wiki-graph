@@ -21,12 +21,12 @@ class ScrapeWorker(Thread):
             try:
                 links = scrape_page(url)
                 for link_url in links:
+                    if (depth > 0) and not link_url in graph.nodes:
+                        self.queue.put((link_url, depth-1))
                     graph.nodes.add(link_url)
                     graph.edges.add((url, link_url))
-                    if (depth > 0):
-                        self.queue.put((link_url, depth-1))
             finally:
-                print(url + ' done!')
+                print(url + ' depth ' + depth + ' done!')
                 self.queue.task_done()
 
 
@@ -42,7 +42,6 @@ def main(url, depth):
     queue.put((url, depth))
 
     queue.join()
-    print(graph)
     with open('output/graph.json', 'w') as outfile:
         json.dump({
             'nodes':list(graph.nodes),
@@ -52,4 +51,4 @@ def main(url, depth):
 
 
 if __name__ == '__main__':
-    main('/wiki/History', 0)
+    main('/wiki/History', 2)
