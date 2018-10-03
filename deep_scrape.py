@@ -4,6 +4,7 @@ from queue import Queue
 from scraper import scrape_page
 from time import time
 from collections import namedtuple
+import json
 
 Graph = namedtuple('Graph', ('nodes', 'edges'))
 
@@ -33,7 +34,7 @@ def main(url, depth):
     ts = time()
     queue = Queue()
 
-    for x in range(8):
+    for x in range(20):
         worker = ScrapeWorker(queue)
         worker.daemon = True
         worker.start()
@@ -42,8 +43,13 @@ def main(url, depth):
 
     queue.join()
     print(graph)
+    with open('output/graph.json', 'w') as outfile:
+        json.dump({
+            'nodes':list(graph.nodes),
+            'edges':list(graph.edges)
+        }, outfile)
     logging.info('Took %s', time() - ts)
 
 
 if __name__ == '__main__':
-    main('/wiki/History', 3)
+    main('/wiki/History', 0)
