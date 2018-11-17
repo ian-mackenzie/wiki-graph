@@ -5,8 +5,12 @@ name = "pypi"
 
 [packages]
 "beautifulsoup4" = "*"
+pymongo = "*"
+asyncio = "*"
+motor = "*"
 
 [dev-packages]
+pylint = "*"
 
 [requires]
 python_version = "3.7"
